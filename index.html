@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markdown 编辑器</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 顶部工具栏 -->
+      <header class="toolbar">
+        <div class="toolbar-left">
+          <button id="btn-open" title="打开 (Ctrl+O)">📂 打开</button>
+          <button id="btn-save" title="保存 (Ctrl+S)">💾 保存</button>
+          <span id="filename" class="filename">未命名.md</span>
+          <span id="dirty" class="dirty hidden">●</span>
+        </div>
+        <div class="toolbar-right">
+          <button id="btn-edit" title="只编辑">✏️ 编辑</button>
+          <button id="btn-split" title="编辑+预览分屏">⇆ 分屏</button>
+          <button id="btn-view" title="只读预览">📄 查看</button>
+          <button id="btn-export-html" title="导出 HTML">↗ HTML</button>
+          <button id="btn-export-pdf" title="导出 PDF">↗ PDF</button>
+        </div>
+      </header>
+
+      <!-- 主体：编辑 + 预览 -->
+      <main class="content" id="content">
+        <section class="pane editor-pane">
+          <textarea id="editor" spellcheck="false" placeholder="在此输入 Markdown..."></textarea>
+        </section>
+        <div class="gutter" id="gutter"></div>
+        <section class="pane preview-pane">
+          <article id="preview" class="markdown-body"></article>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

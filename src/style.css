@@ -1,0 +1,224 @@
+/* =========================================================================
+   基础变量
+   ========================================================================= */
+:root {
+  --bg: #ffffff;
+  --bg-alt: #f6f7f9;
+  --border: #e1e4e8;
+  --text: #24292e;
+  --text-muted: #6a737d;
+  --accent: #0969da;
+  --toolbar-bg: #fafbfc;
+  --code-bg: #f6f8fa;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --sans: -apple-system, "Segoe UI", "Microsoft YaHei", Roboto, sans-serif;
+
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* =========================================================================
+   整体布局
+   ========================================================================= */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* =========================================================================
+   工具栏
+   ========================================================================= */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--toolbar-bg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.toolbar-left, .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.toolbar button {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.toolbar button:hover { background: var(--bg-alt); }
+.toolbar button:active { background: var(--border); }
+.toolbar button.active {
+  background: var(--accent-bg, #ddf4ff);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.filename {
+  margin-left: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.dirty {
+  color: #d29922;
+  font-size: 14px;
+}
+.hidden { display: none !important; }
+
+/* =========================================================================
+   内容区（默认分屏）
+   ========================================================================= */
+.content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.pane {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden; /* 编辑器内部 textarea 自己滚动；预览区单独设 overflow */
+}
+.preview-pane { overflow: auto; }
+.gutter {
+  width: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* 编辑器 */
+.editor-pane { background: var(--bg); }
+#editor {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 16px 20px;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  background: transparent;
+  tab-size: 2;
+}
+
+/* 预览区 */
+.preview-pane { background: var(--bg); }
+.markdown-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 32px;
+  line-height: 1.7;
+}
+.placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* =========================================================================
+   模式切换：纯查看 / 纯编辑
+   ========================================================================= */
+/* 查看模式：隐藏编辑器 */
+.mode-view .editor-pane,
+.mode-view .gutter { display: none; }
+
+/* 编辑模式：隐藏预览 */
+.mode-edit .preview-pane,
+.mode-edit .gutter { display: none; }
+
+/* =========================================================================
+   Markdown 渲染样式
+   ========================================================================= */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin: 24px 0 12px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.markdown-body h1 { font-size: 1.9em; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.markdown-body h2 { font-size: 1.5em; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+.markdown-body h3 { font-size: 1.25em; }
+.markdown-body p { margin: 0 0 12px; }
+.markdown-body a { color: var(--accent); text-decoration: none; }
+.markdown-body a:hover { text-decoration: underline; }
+.markdown-body ul, .markdown-body ol { margin: 0 0 12px; padding-left: 28px; }
+.markdown-body li { margin: 4px 0; }
+.markdown-body blockquote {
+  margin: 0 0 12px;
+  padding: 0 16px;
+  color: var(--text-muted);
+  border-left: 4px solid var(--border);
+}
+.markdown-body code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.markdown-body pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  margin: 0 0 12px;
+}
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 0 0 12px;
+  display: block;
+  overflow-x: auto;
+}
+.markdown-body table th,
+.markdown-body table td {
+  border: 1px solid var(--border);
+  padding: 6px 13px;
+}
+.markdown-body table th { background: var(--bg-alt); font-weight: 600; }
+.markdown-body img { max-width: 100%; }
+.markdown-body hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* =========================================================================
+   打印（导出 PDF）
+   ========================================================================= */
+@media print {
+  body { overflow: visible; }
+  .toolbar { display: none !important; }
+  .content {
+    display: block;
+    overflow: visible;
+  }
+  .editor-pane, .gutter { display: none !important; }
+  .preview-pane { overflow: visible; }
+  .markdown-body { max-width: none; padding: 0; }
+}
