@@ -1,99 +1,100 @@
-# MdEditor — 轻量级本地 Markdown 编辑器
+# MdEditor — Lightweight Local Markdown Editor
 
-一个用 **Tauri 2 + 原生 JS + Vite** 打造的轻量级 Windows 本地 Markdown 查看编辑器。
-打包后仅 ~11MB，双击即用，无需安装任何运行时。
+> **English** | [简体中文](./README.zh-CN.md)
 
-## ✨ 功能
+A lightweight local Markdown viewer & editor for Windows, built with **Tauri 2 + vanilla JS + Vite**.
+The packaged exe is only ~11MB — double-click to run, no installation or runtime required.
 
-- ✏️ **编辑 + 实时预览分屏**：左侧编辑，右侧实时渲染
-- 📂 **打开/保存本地文件**：支持 `.md` / `.markdown` / `.txt`
-- 📄 **三种模式**：纯编辑 / 分屏 / 纯查看（只读）
-- 🎨 **代码高亮**：highlight.js，支持几十种语言
-- 🔤 **编码自动检测**：UTF-8 / UTF-16 / GBK 自动识别，中文文件不乱码
-- 📎 **双击打开**：设为默认程序后，双击 .md 文件直接打开（含单实例）
-- ↗️ **导出 HTML / PDF**
-- ⌨️ 快捷键：`Ctrl+O` 打开、`Ctrl+S` 保存
+## ✨ Features
 
-## 🚀 使用
+- ✏️ **Edit + live preview (split view)**: edit on the left, rendered preview on the right
+- 📂 **Open / save local files**: supports `.md` / `.markdown` / `.txt`
+- 📄 **Three modes**: edit only / split / view only (read-only)
+- 🎨 **Code highlighting**: highlight.js, supporting dozens of languages
+- 🔤 **Auto encoding detection**: UTF-8 / UTF-16 / GBK — no garbled text for Chinese files
+- 📎 **Open via double-click**: set as the default `.md` handler, double-click a file to open it (single-instance supported)
+- ↗️ **Export to HTML / PDF**
+- ⌨️ Shortcuts: `Ctrl+O` open, `Ctrl+S` save
 
-### 开发模式
+## 🚀 Usage
+
+### Development
 ```bash
-cd C:\Users\Admin\Projects\md-editor
-npx tauri dev      # 开发模式，支持热更新
+npx tauri dev      # dev mode with hot reload
 ```
 
-### 打包绿色版 exe
+### Build a portable exe
 ```bash
 npx tauri build --no-bundle
-# 产物：src-tauri/target/release/app.exe (~11MB)
+# Output: src-tauri/target/release/app.exe (~11MB)
 ```
 
-打包后的 exe 拷到任意 Win10/Win11 电脑双击即用（无需 Rust / Node / .NET）。
+The built exe can be copied to any Windows 10 (1903+) / Windows 11 machine and run by double-clicking — no Rust / Node / .NET required.
 
-### 设为默认程序
-右键 .md 文件 → 打开方式 → 选择其他应用 → 选 `MdEditor.exe` → 勾选"始终使用此应用"。
+### Set as the default `.md` handler
+Right-click a `.md` file → *Open with* → *Choose another app* → select `MdEditor.exe` → check *Always use this app*.
 
-## 🛠 技术栈
+## 🛠 Tech Stack
 
-| 层 | 技术 |
-|----|------|
-| 桌面框架 | Tauri 2.11 |
-| 后端 | Rust |
-| 前端 | 原生 JS + Vite |
-| Markdown 解析 | marked 18 |
-| 代码高亮 | highlight.js 11 |
-| 文件对话框 | @tauri-apps/plugin-dialog |
-| 文件读写 | @tauri-apps/plugin-fs |
+| Layer | Technology |
+|-------|------------|
+| Desktop framework | Tauri 2.11 |
+| Backend | Rust |
+| Frontend | Vanilla JS + Vite |
+| Markdown parser | marked 18 |
+| Code highlighting | highlight.js 11 |
+| File dialogs | @tauri-apps/plugin-dialog |
+| File I/O | @tauri-apps/plugin-fs |
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 md-editor/
-├── index.html              # 应用骨架（工具栏 + 编辑/预览分屏）
-├── vite.config.js          # Vite 配置
+├── index.html              # App shell (toolbar + split edit/preview panes)
+├── vite.config.js          # Vite config
 ├── src/
-│   ├── main.js             # 核心逻辑：渲染、文件读写、模式切换、导出
-│   └── style.css           # 工具栏 + 分屏 + Markdown 渲染 + 打印样式
+│   ├── main.js             # Core logic: rendering, file I/O, mode switching, export
+│   └── style.css           # Toolbar + split layout + Markdown styles + print styles
 └── src-tauri/
-    ├── Cargo.toml          # Rust 依赖
-    ├── src/lib.rs          # 后端：插件注册、双击文件参数处理、单实例
-    ├── capabilities/       # Tauri 权限配置
-    └── tauri.conf.json     # 应用配置
+    ├── Cargo.toml          # Rust dependencies
+    ├── src/lib.rs          # Backend: plugin registration, CLI file args, single-instance
+    ├── capabilities/       # Tauri permissions
+    └── tauri.conf.json     # App config
 ```
 
-## ⚠️ 开发踩坑记录
+## ⚠️ Development Notes & Gotchas
 
-> 这些是实际开发中遇到并解决的问题，记录在此避免重复踩坑。
+> Real issues encountered and solved during development, documented here to save others time.
 
-### 1. 国内 cargo 下载卡死
-直连 crates.io 极慢/超时。已配置 `~/.cargo/config.toml` 使用 rsproxy.cn 镜像。
+### 1. Cargo downloads stuck/slow in mainland China
+Connecting to crates.io directly is extremely slow or times out. Fixed by configuring `~/.cargo/config.toml` to use the rsproxy.cn mirror.
 
-### 2. Vite 监听 src-tauri 导致 EBUSY 崩溃
-Vite dev server 默认监听整个项目目录，但 `src-tauri/target/` 里的 dll 被锁。
-**解决**：`vite.config.js` 中 `server.watch.ignored` 排除 `**/src-tauri/**`。
+### 2. Vite watching `src-tauri/` causes an EBUSY crash
+The Vite dev server watches the whole project directory by default, but `src-tauri/target/` contains locked DLLs.
+**Fix**: add `**/src-tauri/**` to `server.watch.ignored` in `vite.config.js`.
 
-### 3. marked v18 移除了 highlight 选项
-marked v5+ 废弃了 `setOptions({ highlight })`，静默不生效。
-**解决**：通过自定义 `renderer.code` 实现代码高亮。
+### 3. marked v18 removed the `highlight` option
+The `setOptions({ highlight })` API was deprecated in marked v5+ and silently does nothing.
+**Fix**: implement highlighting via a custom `renderer.code`.
 
-### 4. 双击 .md 文件打开乱码
-`readFile` 不传参数返回原始字节，需前端自行解码。
-**解决**：读取 `Uint8Array` + `TextDecoder` 智能检测（BOM → UTF-8 严格 → GBK 兜底）。
+### 4. Garbled text when opening `.md` files via double-click
+`readFile` returns raw bytes unless an encoding is specified, and the frontend must decode them itself.
+**Fix**: read as `Uint8Array` + smart `TextDecoder` detection (BOM → strict UTF-8 → GBK fallback).
 
-### 5. ⭐ 双击文件打开时 readFile 报 forbidden path（最棘手）
-这是实现"双击关联文件打开"时遇到的核心问题，排查了很久：
+### 5. ⭐ `forbidden path` error when opening a file via double-click (the trickiest one)
+The core challenge when implementing "open associated files by double-clicking", which took a long time to track down:
 
-**完整链路**（缺一不可）：
-1. **拿参数**：Rust 端 `std::env::args().skip(1)` 读取命令行文件路径
-2. **传给前端**：在 setup 里用 `window.eval()` 注入 `window.__openedFiles` 全局变量
-   - ⚠️ 不能用事件/emit/invoke——会因时序竞争失败
-   - ⚠️ 不能用 `getCurrentWindow().argv()`——Tauri 2 没有这个 API
-3. **fs scope 授权**（关键！）：`app.fs_scope().allow_file(path)` 把路径加入白名单
-   - ⚠️ 对话框打开的文件会自动加 scope，但命令行/双击传入的路径不会
-   - 不加这步会报 `forbidden path`，前端 readFile 被拒
-4. **单实例**：`tauri-plugin-single-instance` 避免重复开窗口，第二次双击通过 `eval` 调用 `window.__openExternal()`
+**The complete chain (every step is required)**:
+1. **Read the arg**: `std::env::args().skip(1)` in Rust to get the file path from the command line
+2. **Pass it to the frontend**: inject `window.__openedFiles` via `window.eval()` in `setup`
+   - ⚠️ Don't use events/emit/invoke — they fail due to timing races
+   - ⚠️ Don't use `getCurrentWindow().argv()` — that API doesn't exist in Tauri 2
+3. **fs scope authorization** (critical!): `app.fs_scope().allow_file(path)` to add the path to the allowlist
+   - ⚠️ Files opened via the dialog are auto-added to the scope, but files passed via the command line / double-click are not
+   - Without this step you get `forbidden path` and the frontend `readFile` is rejected
+4. **Single instance**: `tauri-plugin-single-instance` prevents duplicate windows; a second double-click calls `window.__openExternal()` via `eval`
 
-参考：[Tauri 官方 file-associations 示例](https://github.com/tauri-apps/tauri/blob/dev/examples/file-associations/src-tauri/src/main.rs)
+Reference: [Tauri official file-associations example](https://github.com/tauri-apps/tauri/blob/dev/examples/file-associations/src-tauri/src/main.rs)
 
 ## 📄 License
 
